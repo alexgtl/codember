@@ -1,8 +1,9 @@
-const http = require('http');
-const fs = require('fs/promises')
+import http from 'http'
+import fs from 'fs/promises'
 
 const hostname = '127.0.0.1';
 const port = 3000;
+const regex = /\n/g;
 
 const server = http.createServer((req, res) => {
   res.statusCode = 200;
@@ -16,17 +17,15 @@ let globalValidUsers = []
 
 server.listen(port, hostname, async () => {
   console.log(`El servidor se está ejecutando en http://${hostname}:${port}/`)
-  await getDocument();
-});
 
-async function getDocument() {
   const users = await fetchUsers('users.txt');
   const parsedUsers = parseUsers(users)
-  const regex = /\n/g;
   const flattenedUsers = parsedUsers.map(user => user.replace(regex, ' '))
-  getValidUsers(flattenedUsers)
-  console.log(globalValidUsers.length, globalValidUsers.reverse())
-}
+  setValidUsers(flattenedUsers)
+  console.log(`The number of valid users is ${globalValidUsers.length} and the last user is ${globalValidUsers.pop()}`)
+});
+
+
 
 async function fetchUsers(file) {
   try {
@@ -37,14 +36,11 @@ async function fetchUsers(file) {
 }
 
 function parseUsers(users) {
-  const formatedUsers = users
-                        .split('\n\n')
-                        .filter(element => element.trim())
-  return formatedUsers
+  return users.split('\n\n').filter(element => element.trim())
 }
 
-function getValidUsers(users) {
-  const validUsers = users.forEach(user => {
+function setValidUsers(users) {
+  users.forEach(user => {
     if(isValidUser(user.split(' '))) {
       globalValidUsers.push(user);
     }
@@ -56,8 +52,8 @@ function isValidUser(fields) {
   let alreadyFoundFields = [];
 
   fields.forEach(field => {
-    const splittedField = field.split(':')[0];
-    if (validFields.includes(splittedField)) {
+    const splittedField = field.split(':')[0]
+    if (validFields.includes(splittedField) && !alreadyFoundFields.includes(splittedField)) {
       fieldMatches++
       alreadyFoundFields.push(splittedField)
     }
