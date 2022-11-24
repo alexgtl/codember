@@ -1,7 +1,7 @@
 import http from 'http'
 
 const HOSTNAME = '127.0.0.1'
-const PORT = 3001
+const PORT = 3000
 
 const SPECIAL_CHAR = 5
 const MIN_RANGE_NUMBER = 11098
