@@ -1,29 +1,22 @@
-import http from 'http'
-
-const HOSTNAME = '127.0.0.1'
-const PORT = 3000
+import Server from '../../server.js'
+import { SERVER_HOSTNAME, SERVER_PORT } from '../common.js'
 
 const SPECIAL_CHAR = 5
 const MIN_RANGE_NUMBER = 11098
 const MAX_RANGE_NUMBER = 98123
 
-let validNumbers = [];
+let validNumbers = []
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain')
-  res.end('Alive!')
-});
-
-server.listen(PORT, HOSTNAME, async () => {
-  console.log(`Server running under http://${HOSTNAME}:${PORT}/`)
+const server = new Server().getClient()
+server.listen(SERVER_PORT, SERVER_HOSTNAME, async () => {
+  console.log(`Server running under http://${SERVER_HOSTNAME}:${SERVER_PORT}/`)
 
   const generatedNumbers = getNumbersInValidRange()
   recoverPassword(generatedNumbers)
-});
+})
 
 function getNumbersInValidRange() {
-  let generatedNumbers = [];
+  let generatedNumbers = []
   for (let i = MIN_RANGE_NUMBER; i <= MAX_RANGE_NUMBER; i++) {
     generatedNumbers.push(i)
   }
@@ -35,14 +28,14 @@ function recoverPassword(numbers) {
     if (isValidNumber(number)) {
       validNumbers.push(number)
     }
-  });
+  })
 
-  console.log(`submit ${validNumbers.length}-${validNumbers[55]}`);
+  console.log(`submit ${validNumbers.length}-${validNumbers[55]}`)
 }
 
 function isValidNumber(number) {
-  let specialCharCounter = 0;
-  let hasLowerThanPreviousNumber = false;
+  let specialCharCounter = 0
+  let hasLowerThanPreviousNumber = false
 
   const digits = [...number.toString()].map(digit => +digit)
   for(let i = 0; i <= digits.length; i++) {

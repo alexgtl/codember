@@ -6,9 +6,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch:02": "nodemon challenge02/index.js",
-    "watch:03": "nodemon challenge03/index.js",
-    "watch:04": "nodemon challenge04/index.js"
+    "watch:01": "nodemon src/challenge01/index.js",
+    "watch:02": "nodemon src/challenge02/index.js",
+    "watch:03": "nodemon src/challenge03/index.js",
+    "watch:04": "nodemon src/challenge04/index.js",
+    "watch:05": "nodemon src/challenge05/index.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +24,7 @@
   },
   "homepage": "https://github.com/alexgtl/codember#readme",
   "devDependencies": {
+    "jest": "^29.3.1",
     "nodemon": "^2.0.20"
   },
   "dependencies": {

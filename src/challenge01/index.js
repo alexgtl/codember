@@ -1,39 +1,23 @@
-import http from 'http'
-import fs from 'fs/promises'
+import { fetchLocalFile, SERVER_HOSTNAME, SERVER_PORT } from '../common.js'
+import Server from '../../server.js'
 
-const hostname = '127.0.0.1';
-const port = 3000;
-const regex = /\n/g;
+const regex = /\n/g
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  res.end('Hola Mundo');
-});
-
-
+const USERS_FILE = './src/challenge01/users.txt'
 const validFields = ['usr', 'eme', 'psw', 'age', 'loc', 'fll']
 let globalValidUsers = []
 
-server.listen(port, hostname, async () => {
-  console.log(`El servidor se está ejecutando en http://${hostname}:${port}/`)
+const server = new Server().getClient()
+server.listen(SERVER_PORT, SERVER_HOSTNAME, async () => {
+  console.log(`🚀 Server is running under http://${SERVER_HOSTNAME}:${SERVER_PORT}/`)
 
-  const users = await fetchUsers('users.txt');
+  const users = await fetchLocalFile(USERS_FILE)
   const parsedUsers = parseUsers(users)
   const flattenedUsers = parsedUsers.map(user => user.replace(regex, ' '))
   setValidUsers(flattenedUsers)
   console.log(`The number of valid users is ${globalValidUsers.length} and the last user is ${globalValidUsers.pop()}`)
-});
+})
 
-
-
-async function fetchUsers(file) {
-  try {
-    return await fs.readFile(file, { encoding: 'utf8' });
-  } catch (err) {
-    console.log(err);
-  }
-}
 
 function parseUsers(users) {
   return users.split('\n\n').filter(element => element.trim())
@@ -42,14 +26,14 @@ function parseUsers(users) {
 function setValidUsers(users) {
   users.forEach(user => {
     if(isValidUser(user.split(' '))) {
-      globalValidUsers.push(user);
+      globalValidUsers.push(user)
     }
-  });
+  })
 }
 
 function isValidUser(fields) {
-  let fieldMatches = 0;
-  let alreadyFoundFields = [];
+  let fieldMatches = 0
+  let alreadyFoundFields = []
 
   fields.forEach(field => {
     const splittedField = field.split(':')[0]
@@ -57,7 +41,7 @@ function isValidUser(fields) {
       fieldMatches++
       alreadyFoundFields.push(splittedField)
     }
-  });
+  })
 
   return fieldMatches === validFields.length
 }
